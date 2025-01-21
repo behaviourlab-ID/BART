@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>jsPsych BART Example</title>
+  <!-- JS: jsPsych (CDN for version 7) -->
+  <script src="https://unpkg.com/jspsych@8.2.0/dist/index.browser.min.js"></script>
+  <!-- CSS: jsPsych default styling -->
+  <link rel="stylesheet" href="https://unpkg.com/jspsych@7.3.4/css/jspsych.css" />
+  <!-- Our custom BART plugin -->
+  <script src="jspsych-bart.js"></script>
+</head>
+<body>
+  <div id="jspsych-target"></div>
+  
+  <script>
+    // Create an instance of jsPsych
+    const jsPsych = initJsPsych({
+      on_finish: function() {
+        // At the end, we can automatically show the data or redirect
+        // console.log(jsPsych.data.get().json());
+        jsPsych.data.displayData();
+      }
+    });
+
+    // Example instructions block
+    let instructions = {
+      type: jsPsych.HtmlKeyboardResponse,
+      stimulus: `
+        <h2>Welcome to the BART Experiment</h2>
+        <p>You will see several balloons. Each balloon can randomly pop after a certain number of pumps.</p>
+        <p>Click PUMP to inflate the balloon and increase your potential points. But if it pops, you earn 0 for that balloon!</p>
+        <p>Click COLLECT to secure the points and move on.</p>
+        <p>Press any key to begin.</p>
+      `
+    };
+
+    // Create multiple BART trials
+    let bartTrials = [];
+    let numberOfBalloons = 5; // for example
+    for (let i = 0; i < numberOfBalloons; i++) {
+      bartTrials.push({
+        type: 'bart',
+        maxPop: 15,         // random pop between 1 and 15
+        balloonColor: '#ff6666',
+        feedbackDuration: 1500, // how long to wait after pop/collect before next
+      });
+    }
+
+    // Debrief block
+    let debrief = {
+      type: jsPsych.HtmlButtonResponse,
+      stimulus: function() {
+        const trials = jsPsych.data.get().filter({trial_type: 'bart'}).values();
+        // Calculate total earned
+        let total = 0;
+        trials.forEach(t => { total += t.points_earned; });
+        return `
+          <h3>All trials complete!</h3>
+          <p>Your total points: ${total}</p>
+          <p>Click the button below to finish.</p>
+        `;
+      },
+      choices: ['Finish']
+    };
+
+    // Put the timeline together
+    let timeline = [];
+    timeline.push(instructions);
+    timeline = timeline.concat(bartTrials);
+    timeline.push(debrief);
+
+    // Initialize jsPsych
+    jsPsych.run(timeline);
+  </script>
+</body>
+</html>
