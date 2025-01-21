@@ -1,205 +1,240 @@
-// standard version of the BART
+$(document).ready(function() {
 
-$(document).ready(function() { 
+  //-----------------------------------------------------
+  // 0. GET Qualtrics Response ID from URL (if provided)
+  //-----------------------------------------------------
+  // e.g. the iframe might call index.html?respId=SV_abcdef123
+  function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param) || "";
+  }
+  // Store the participant/response ID here:
+  var responseId = getQueryParam("respId"); 
+  // If no ?respId= is in the URL, it will be "" (empty string).
 
-    var saveThis = 'hidden'; // text fields that saves data should not be shown; can be shown in testing
-  
-    // initialize values
-    var round = 0;
-    var start_size = 150; // start value of widht & height of the image; must correspond to the value that is specified for the #ballon id in style.css
-    var increase = 2; // number of pixels by which balloon is increased each pump
-    var size; // start_size incremented by 'increase'
-    var pumps; 
-    var total = 0; // money that has been earned in total
-    var rounds_played = 30;
-    var explode_array =  [31, 80,  63, 103, 20,  26, 100,  75, 109,  72,  88,  77, 113, 22,  83,  86,  57,  14, 9,  90,  56,  41,  56,  27, 108,  42, 116,  18,  43,  95];
-    var maximal_pumps = 128;
-    var pumpmeup; // number pumps in a given round; is updated each round
-    var number_pumps = []; // arrays for saving number of pumps
-    var exploded = []; // array for saving whether ballon has exploded
-    var explosion; // will an explosion occur? 1 = yes, 0 = no
-    var last_win = 0; // initialize variable that contains the win of the previous round
-    
-    // initialize language
-    var label_press = 'Ballon aufpumpen';
-    var label_collect = '$$$ einsammeln';
-    var label_balance = 'Gesamtguthaben:';
-    var label_last = 'Gewinn letzte Runde:';
-    var label_currency = ' Taler';
-    var label_header = 'Ballon-Spiel Runde ';
-    var label_gonext1 = 'Nächste Runde starten';
-    var label_gonext2 = 'Spiel beenden';
-    var msg_explosion1 = '<p>Der Ballon ist in dieser Runde nach dem ';
-    var msg_explosion2 = '. Mal Aufpumpen geplatzt. <p>Sie haben in dieser Runde kein Geld verdient.</p>';
-    
-    var msg_collect1 = '<p>Der Ballon ist nicht geplatzt!</p><p>Sie verdienen diese Runde ';
-    var msg_collect2 = ' Taler.</p><p> Das erspielte Geld ist sicher in der Bank.</p>';
-    
-    var msg_end1 = '<p>Damit ist dieser Teil der Studie abgeschlossen. Sie haben im Ballon-Spiel ';
-    var msg_end2 = ' Taler Gewinn gemacht. </p><p>Klicken Sie auf <i>Weiter</i>, um mit der Studie fortzufahren.</p>';
-    
-    var err_msg = 'Sie können erst Geld einsammeln, sobald Sie den Ballon mindestens einmal aufgepumpt haben. Betätigen Sie dazu den Button "Ballon aufpumpen."';
-  
-  
-    // initialize labels
-    $('#press').html(label_press); 
-    $('#collect').html(label_collect);
-    $('#total_term').html(label_balance);
-    $('#total_value').html(total+label_currency);
-    $('#last_term').html(label_last);
-    $('#last_value').html(last_win+label_currency);
-    
-    // below: create functions that define game functionality
-    
-    // what happens when a new round starts
-    var new_round = function() {
-        console.log(number_pumps);
-        console.log(exploded);
-        $('#gonext').hide();
-        $('#message').hide();  
-        $('#collect').show();
-        $('#press').show();
-        round += 1;
-        size = start_size;
-        pumps = 0;
-        $('#ballon').width(size); 
-        $('#ballon').height(size);
-        $('#ballon').show();
-        $('#round').html('<h2>'+label_header+round+'<h2>');
-    };
-  
-    // what happens when the game ends
-    var end_game = function() {
-        $('#total').remove();
-        $('#collect').remove();
-        $('#ballon').remove();
-        $('#press').remove();
-        $('#gonext').remove();
-        $('#round').remove();
-        $('#last_round').remove();
-        $('#goOn').show();
-        $('#message').html(msg_end1+total+msg_end2).show();
-        store_data(); // note: this function needs to be defined properly
-    };
-    
-    // Important: this function will have to be replaced to ensure that
-    // the data is actually sent to _your_ server: 
-    var store_data = function() {
-        $('#saveThis1').html('<input type='+saveThis+' name ="v_177" value="'+number_pumps+'" />');
-        $('#saveThis2').html('<input type='+saveThis+' name ="v_178" value="'+exploded+'" />');
-        $('#saveThis3').html('<input type='+saveThis+' name ="v_577" value="'+total+'" />');
-    };
-    
-    // message shown if balloon explodes
-    var explosion_message = function() {
-        $('#collect').hide();
-        $('#press').hide();
-        $('#message').html(msg_explosion1+pumpmeup+msg_explosion2).show();
-    };
-    
-    // message shown if balloon does not explode
-    var collected_message = function() {
-        $('#collect').hide();
-        $('#press').hide();    
-        $('#message').html(msg_collect1+pumpmeup+msg_collect2).show();
-    };  
-    
-    // animate explosion using jQuery UI explosion
-    var balloon_explode = function() {
-        $('#ballon').hide( "explode", {pieces: 48}, 1000 );
+  //-----------------------------------------------------
+  // 1. CONFIGURATION
+  //-----------------------------------------------------
+  var rounds_played = 30;   // total BART rounds
+  var maximal_pumps = 128;  // maximum possible pumps
+  // Standard BART explosion array for 30 rounds:
+  var explode_array = [
+    31,80,63,103,20,26,100,75,109,72,
+    88,77,113,22,83,86,57,14,9,90,
+    56,41,56,27,108,42,116,18,43,95
+  ];
 
-        // activate this if you have a sound file to play a sound
-        // when the balloon explodes:
-        
-        // document.getElementById('explosion_sound').play();
-    };  
+  var start_size  = 150;  // must match #ballon width/height in style.css
+  var increase    = 2;    // balloon grows by 2px each pump
+  var round       = 0;
+  var size;
+  var pumps;
+  var total       = 0;    // total points
+  var pumpmeup;
+  var explosion;          // 1 if exploded, 0 if not
+  // Arrays to store data each round:
+  var number_pumps = [];
+  var exploded     = [];
+
+  //-----------------------------------------------------
+  // 2. INDONESIAN LABELS & MESSAGES
+  //-----------------------------------------------------
+  var label_press    = "Pompa Balon";
+  var label_collect  = "Kumpulkan Poin";
+  var label_gonext1  = "Mulai Ronde Berikutnya";
+  var label_gonext2  = "Selesaikan Permainan";
+  var label_balance  = "Total Poin:";
+  var label_currency = " poin";
+  var label_header   = "Permainan Balon - Ronde ";
+  var err_msg        = "Anda baru dapat mengumpulkan poin setelah memompa balon minimal satu kali.";
+
+  var msg_explosion1 = "<p>Balon meledak setelah pompa ke- ";
+  var msg_explosion2 = ".</p><p>Anda tidak mendapatkan poin pada ronde ini.</p>";
+
+  var msg_collect1   = "<p>Balon tidak meledak!</p><p>Anda mendapatkan ";
+  var msg_collect2   = " poin pada ronde ini. Poin tersebut telah disimpan dengan aman.</p>";
+
+  var msg_end1       = "<p>Bagian ini sudah selesai. Anda mendapatkan total ";
+  var msg_end2       = " poin. Klik <i>Lanjut</i> untuk melanjutkan.</p>";
+
+  //-----------------------------------------------------
+  // 3. INITIAL PAGE SETUP
+  //-----------------------------------------------------
+  // Set labels in HTML, if not already in index.html:
+  $("#press").text(label_press);
+  $("#collect").text(label_collect);
+  $("#total_term").text(label_balance);
+  $("#total_value").text(total + label_currency);
+  $("#goOn").hide();  // Hide the “Lanjut” button initially
+
+  //-----------------------------------------------------
+  // 4. BART GAME FUNCTIONS
+  //-----------------------------------------------------
+
+  function new_round() {
+    $("#gonext").hide();
+    $("#message").hide();  
+    $("#collect").show();
+    $("#press").show();
+
+    round++;
+    size  = start_size;
+    pumps = 0;
+
+    // Reset balloon size
+    $("#ballon").width(size).height(size).show();
+    // Show round header
+    $("#round").html("<h2>" + label_header + round + "</h2>");
+  }
+
+  function end_game() {
+    // Remove or hide gameplay elements
+    $("#collect").remove();
+    $("#press").remove();
+    $("#gonext").remove();
+    $("#round").remove();
+    $("#ballonwrap").remove();
     
-    // show button that starts next round
-    var gonext_message = function() {
-        $('#ballon').hide();
-        if (round < rounds_played) {
-            $('#gonext').html(label_gonext1).show();
-        } else {
-            $('#gonext').html(label_gonext2).show();
-        }
+    // Show final message
+    $("#goOn").show();
+    $("#message").html(msg_end1 + total + msg_end2).show();
+
+    // Save final data to hidden fields, or do an AJAX call, etc.
+    store_data();
+  }
+
+  // Save data in hidden fields or do something else
+  function store_data() {
+    // 1. Put them in hidden inputs (if you want Qualtrics to read them):
+    $("#saveThis1").html('<input type="hidden" name="pumps" value="'+ number_pumps.join(",") +'" />');
+    $("#saveThis2").html('<input type="hidden" name="exploded" value="'+ exploded.join(",") +'" />');
+    $("#saveThis3").html('<input type="hidden" name="total" value="'+ total +'" />');
+    
+    // 2. Send data via AJAX to Google Apps Script
+    //    Replace with your actual script URL:
+    var googleScriptURL = "https://script.google.com/macros/s/AKfycbyo_nFWQ7Pqvg7VO9Ll2IDe1gC2ReuWXMcI3Vp7IVRUdOCyaDRv0m94bT47w5JOkOpq/exec";
+
+    // Prepare an object to send
+    var payload = {
+      response_id: responseId,             // from Qualtrics param
+      number_pumps: number_pumps.join(","),// CSV or raw array
+      exploded: exploded.join(","),        
+      total: total
     };
-    
-    // add money to bank
-    var increase_value = function() {
-        $('#total_value').html(total+label_currency);
-    };
-    
-    var show_last = function() {
-        $('#last_value').html(last_win+label_currency);
-    };
-    
-    // button functionalities
-    
-    // pump button functionality
-    $('#press').click(function() {
-        if (pumps >= 0 && pumps < maximal_pumps) { // interacts with the collect function, which sets pumps to -1, making the button temporarily unclickable
-            explosion = 0; // is set to one if pumping goes beyond explosion point; see below
-            pumps += 1;
-            if (pumps < explode_array[round-1]) {
-	        size +=increase;
-	        $('#ballon').width(size); 
-                $('#ballon').height(size);
-            } else {
-	        last_win = 0;
-	        pumpmeup = pumps;
-	        pumps = -1; // makes pumping button unclickable until new round starts
-	        explosion = 1; // save that balloon has exploded this round
-	        balloon_explode();
-	        exploded.push(explosion); // save whether balloon has exploded or not
-	        number_pumps.push(pumpmeup); // save number of pumps
-	        setTimeout(explosion_message, 1200);
-	        setTimeout(gonext_message, 1200);
-	        setTimeout(show_last, 1200);
-            }
-        }
+
+    $.ajax({
+      url: googleScriptURL,
+      method: "POST",
+      data: payload, 
+      success: function(response) {
+        console.log("Data posted successfully to Google Sheets:", response);
+      },
+      error: function(err) {
+        console.error("Error posting data to Google Sheets:", err);
+      }
     });
-  
-  
-    // collect button: release pressure and hope for money
-    $('#collect').click(function() {
-        if (pumps === 0) {
-	    alert(err_msg);
-        } else if (pumps > 0) { // only works after at least one pump has been made
-	    exploded.push(explosion); // save whether balloon has exploded or not
-            // activate this if you have a sound file to play a sound
-            // when the balloon does not explode:
-            
-	    // document.getElementById('tada_sound').play(); 
-	    number_pumps.push(pumps); // save number of pumps
-	    pumpmeup = pumps;
-	    pumps = -1; // makes pumping button unclickable until new round starts
-	    $('#ballon').hide();
-	    collected_message();
-	    gonext_message();
-	    total += pumpmeup;
-	    last_win = pumpmeup;
-	    increase_value();
-	    show_last();
-        }
-    });
-    
-    // click this button to start the next round (or end game when all rounds are played)
-    $('#gonext').click(function() {
-        if (round < rounds_played) {
-            new_round();
-        } else {
-            end_game();
-        }
-    });
-    
-    // continue button is shown when the game has ended. This needs to be replaced
-    // by a function that takes into account on which platform the BART runs (i.e.
-    // how will the page be submitted?)
-    $("#goOn").click(function() {
-        $("form[name=f1]").submit();
-    });
-    
-    // start the game!
-    new_round();
-    
+  }
+
+  function explosion_message() {
+    $("#collect").hide();
+    $("#press").hide();
+    $("#message").html(msg_explosion1 + pumpmeup + msg_explosion2).show();
+  }
+
+  function collected_message() {
+    $("#collect").hide();
+    $("#press").hide();    
+    $("#message").html(msg_collect1 + pumpmeup + msg_collect2).show();
+  }
+
+  // jQuery UI “explode” effect:
+  function balloon_explode() {
+    $("#ballon").hide("explode", { pieces:48 }, 1000);
+    // Optionally play explosion sound:
+    // document.getElementById("explosion_sound").play();
+  }
+
+  function gonext_message() {
+    $("#ballon").hide();
+    if (round < rounds_played) {
+      $("#gonext").text(label_gonext1).show();
+    } else {
+      $("#gonext").text(label_gonext2).show();
+    }
+  }
+
+  function update_total_display() {
+    $("#total_value").text(total + label_currency);
+  }
+
+  //-----------------------------------------------------
+  // 5. BUTTON HANDLERS
+  //-----------------------------------------------------
+
+  // “Pompa Balon”
+  $("#press").click(function() {
+    // only allow if pumps>=0 and below max
+    if (pumps >= 0 && pumps < maximal_pumps) {
+      explosion = 0;
+      pumps++;
+
+      // Check explosion threshold
+      if (pumps < explode_array[round - 1]) {
+        // Balloon grows
+        size += increase;
+        $("#ballon").width(size).height(size);
+      } else {
+        // Balloon explodes
+        pumpmeup = pumps;
+        pumps    = -1;  // disable further pumping
+        explosion = 1;
+        balloon_explode();
+        exploded.push(explosion);
+        number_pumps.push(pumpmeup);
+
+        setTimeout(explosion_message, 1200);
+        setTimeout(gonext_message, 1200);
+      }
+    }
+  });
+
+  // “Kumpulkan Poin”
+  $("#collect").click(function() {
+    if (pumps === 0) {
+      alert(err_msg);
+    } else if (pumps > 0) {
+      exploded.push(explosion); // 0 means didn't explode
+      number_pumps.push(pumps);
+      pumpmeup = pumps;
+      pumps    = -1; 
+      $("#ballon").hide();
+      collected_message();
+      gonext_message();
+      total += pumpmeup;
+      update_total_display();
+    }
+  });
+
+  // “Mulai Ronde Berikutnya” or “Selesaikan Permainan”
+  $("#gonext").click(function() {
+    if (round < rounds_played) {
+      new_round();
+    } else {
+      end_game();
+    }
+  });
+
+  // “Lanjut” after finishing the game
+  $("#goOn").click(function() {
+    // Here you can close the iframe, or do a redirect, or 
+    // let Qualtrics move on automatically, etc.
+    // For demonstration:
+    alert("Terima kasih! Data Anda telah tersimpan.");
+  });
+
+  //-----------------------------------------------------
+  // 6. START THE GAME
+  //-----------------------------------------------------
+  new_round();
 });
+	
