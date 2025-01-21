@@ -15,14 +15,14 @@ $(document).ready(function() {
   //-----------------------------------------------------
   // 1. CONFIGURATION
   //-----------------------------------------------------
-  var rounds_played = 30;   // total BART rounds
-  var maximal_pumps = 128;  // maximum possible pumps
+  var rounds_played = 20;   // total BART rounds
+  var maximal_pumps = 32;  // maximum possible pumps
   // Standard BART explosion array for 30 rounds:
   var explode_array = [
-    31,80,63,103,20,26,100,75,109,72,
-    88,77,113,22,83,86,57,14,9,90,
-    56,41,56,27,108,42,116,18,43,95
-  ];
+  10, 15, 3, 12, 28, 7, 20, 31, 25, 18,
+  6, 19, 5, 13, 30, 4, 11, 27, 17, 9
+];
+
 
   var start_size  = 150;  // must match #ballon width/height in style.css
   var increase    = 2;    // balloon grows by 2px each pump
