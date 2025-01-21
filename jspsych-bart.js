@@ -6,31 +6,31 @@ jsPsych.plugins["bart"] = (function () {
     description: "Custom plugin to run one trial of the Balloon Analogue Risk Task",
     parameters: {
       maxPop: {
-        type: jsPsych.plugins.parameterType.INT,
+        type: jsPsych.ParameterType.INT,
         default: 10, // The maximum number of pumps before guaranteed pop
       },
       balloonColor: {
-        type: jsPsych.plugins.parameterType.STRING,
+        type: jsPsych.ParameterType.STRING,
         default: "#ff6666",
       },
       startingBalloonSize: {
-        type: jsPsych.plugins.parameterType.INT,
+        type: jsPsych.ParameterType.INT,
         default: 100, // in px
       },
       sizeIncrement: {
-        type: jsPsych.plugins.parameterType.INT,
+        type: jsPsych.ParameterType.INT,
         default: 5, // how many px to grow per pump
       },
       pumpText: {
-        type: jsPsych.plugins.parameterType.STRING,
+        type: jsPsych.ParameterType.STRING,
         default: "Pump",
       },
       collectText: {
-        type: jsPsych.plugins.parameterType.STRING,
+        type: jsPsych.ParameterType.STRING,
         default: "Collect",
       },
       feedbackDuration: {
-        type: jsPsych.plugins.parameterType.INT,
+        type: jsPsych.ParameterType.INT,
         default: 1000, // ms to wait after pop or collect before ending
       },
     },
