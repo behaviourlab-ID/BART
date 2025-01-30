@@ -112,7 +112,7 @@ $(document).ready(function() {
     
     // 2. Send data via AJAX to Google Apps Script
     //    Replace with your actual script URL:
-    var googleScriptURL = "https://script.google.com/macros/s/AKfycbyo_nFWQ7Pqvg7VO9Ll2IDe1gC2ReuWXMcI3Vp7IVRUdOCyaDRv0m94bT47w5JOkOpq/exec";
+    var googleScriptURL = "https://script.google.com/macros/s/AKfycbwo5TMlBWFItTJMMBqtfLHgI9r83jiEWOdtykoMTOd22nM2BnADwOoPYjEn5Laud2k/exec";
 
     // Prepare an object to send
     var payload = {
