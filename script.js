@@ -15,7 +15,7 @@ $(document).ready(function() {
   //-----------------------------------------------------
   // 1. CONFIGURATION
   //-----------------------------------------------------
-  var rounds_played = 20;   // total BART rounds
+  var rounds_played = 5;   // total BART rounds
   var maximal_pumps = 32;  // maximum possible pumps
   // Standard BART explosion array for 30 rounds:
   var explode_array = [
