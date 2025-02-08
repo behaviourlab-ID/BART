@@ -1,64 +1,77 @@
 <!doctype html>
 <html>
 <head>
-
-<meta charset="utf-8" />
-<script language="javascript" type="text/javascript"></script>
-<script src="jquery-3.7.1.min.js"></script>
-<link rel="stylesheet" href="jquery-ui.css">
-<script src="jquery-ui.js"></script>
-<script src="script.js"></script>
-<link rel="stylesheet" href="style.css">
-
-<title>
-BART
-</title>
-
+  <meta charset="utf-8">
+  <!-- Make the page responsive -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BART - Permainan Balon</title>
+  
+  <!-- Link to CSS -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- jQuery and jQuery UI -->
+  <script src="jquery-3.7.1.min.js"></script>
+  <link rel="stylesheet" href="jquery-ui.css">
+  <script src="jquery-ui.js"></script>
+  
+  <!-- Link to our custom script -->
+  <script src="script.js"></script>
 </head>
-
-  <body>
-
-  <!-- here you can a file to play a sound when the balloon explodes or
-  a round is ended successfully: -->
-  <!-- 
-       <audio id="explosion_sound" src="explosion.wav" preload="auto"></audio>
-       <audio id="tada_sound" src="tada.wav" preload="auto"></audio>
-       -->
-  
-  
-  <div id="round"></div>
-  <div id="bigbigwrap">
-	<div id="sliderwrap">
-	  <div id="showValue">Luftvorrat <br />(0 bis 30)</div>
-	  <div id="slider"></div>
-	</div> 
-	
-    <div id="bigwrap">
-
-	  
-	  <div id="ballonwrap">
-	    <div id="message"></div>
-	    <div id="gonext"></div>
-	    <img src="Balloon.png" id="ballon" alt="Ballon">
-	  </div>
-	  
-	  <button type="button" id="press">Pompa Balon</button>
-	  <button type="button" id="collect">Kumpulkan Poin</button>
-	  <div id="total">
-	    <div id="total_term"></div>
-	    <div id="total_value"></div>
-	  </div>
-	  button type="button" id="goOn" style="display: none;">Lanjut</button>
-
-
-    </div>
+<body>
+  <!-- Instruction Page -->
+  <div id="instructions">
+    <h1>Selamat Datang di Permainan Balon</h1>
+    <p>
+      Dalam permainan ini, Anda akan memompa sebuah balon untuk mendapatkan poin.
+      Setiap kali Anda menekan tombol <strong>"Pompa Balon"</strong>, balon akan mengembang dan poin
+      untuk ronde tersebut akan bertambah. Namun, hati-hati: jika balon dipompa terlalu banyak, 
+      balon akan meledak dan Anda tidak akan mendapatkan poin untuk ronde itu.
+    </p>
+    <p>
+      Anda juga dapat menekan tombol <strong>"Kumpulkan Poin"</strong> untuk menyimpan poin yang telah 
+      Anda peroleh di ronde tersebut.
+    </p>
+    <p>
+      Permainan ini terdiri dari <strong>20 ronde</strong> dengan batas pompa yang lebih rendah agar tidak memakan waktu lama.
+      Cobalah untuk mendapatkan poin sebanyak mungkin!
+    </p>
+    <button id="startButton">Mulai</button>
   </div>
-    
-  <div id="saveThis1"></div>
-  <div id="saveThis2"></div>
-  <div id="saveThis3"></div>
-  
-  
-  </body>
 
+  <!-- Main Experiment Container (hidden by default) -->
+  <div id="experiment" style="display: none;">
+    <div id="round"></div>
+    
+    <div id="bigbigwrap">
+      <div id="sliderwrap">
+        <!-- (Optional slider content can go here if needed) -->
+        <div id="showValue">Luftvorrat <br />(0 bis 30)</div>
+        <div id="slider"></div>
+      </div> 
+      
+      <div id="bigwrap">
+        <div id="ballonwrap">
+          <div id="message"></div>
+          <div id="gonext"></div>
+          <img src="Balloon.png" id="ballon" alt="Balon">
+        </div>
+        
+        <button type="button" id="press"></button>
+        <button type="button" id="collect"></button>
+        <!-- Visualization element: current round points -->
+        <div id="current_points">Poin Ronde Ini: 0</div>
+        <div id="total">
+          <div id="total_term"></div>
+          <div id="total_value"></div>
+        </div>
+        <button type="button" id="goOn">Lanjut</button>
+      </div>
+    </div>
+    
+    <!-- Hidden fields for data storage (if needed for Qualtrics/submit) -->
+    <div id="saveThis1"></div>
+    <div id="saveThis2"></div>
+    <div id="saveThis3"></div>
+  </div>
+</body>
 </html>
