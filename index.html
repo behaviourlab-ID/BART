@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <!-- Make the page responsive -->
+  <!-- Responsive viewport -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>BART - Permainan Balon</title>
   
@@ -22,19 +22,15 @@
   <div id="instructions">
     <h1>Selamat Datang di Permainan Balon</h1>
     <p>
-      Dalam permainan ini, Anda akan memompa sebuah balon untuk mendapatkan poin.
-      Setiap kali Anda menekan tombol <strong>"Pompa Balon"</strong>, balon akan mengembang dan poin
-      untuk ronde tersebut akan bertambah. Namun, hati-hati: jika balon dipompa terlalu banyak, 
-      balon akan meledak dan Anda tidak akan mendapatkan poin untuk ronde itu.
+      Cara Bermain:
     </p>
-    <p>
-      Anda juga dapat menekan tombol <strong>"Kumpulkan Poin"</strong> untuk menyimpan poin yang telah 
-      Anda peroleh di ronde tersebut.
-    </p>
-    <p>
-      Permainan ini terdiri dari <strong>20 ronde</strong> dengan batas pompa yang lebih rendah agar tidak memakan waktu lama.
-      Cobalah untuk mendapatkan poin sebanyak mungkin!
-    </p>
+    <ul>
+      <li>Tekan <strong>"Pompa Balon"</strong> untuk mengembangkan balon dan menambah poin di ronde tersebut.</li>
+      <li>Jika balon meledak, Anda tidak akan mendapatkan poin di ronde itu.</li>
+      <li>Tekan <strong>"Kumpulkan Poin"</strong> untuk menyimpan poin sebelum balon meledak.</li>
+      <li>Permainan terdiri dari <strong>20 ronde</strong> dengan batas pompa yang lebih rendah agar lebih cepat.</li>
+      <li>Kumpulkan poin sebanyak mungkin!</li>
+    </ul>
     <button id="startButton">Mulai</button>
   </div>
 
@@ -42,33 +38,31 @@
   <div id="experiment" style="display: none;">
     <div id="round"></div>
     
-    <div id="bigbigwrap">
-      <div id="sliderwrap">
-        <!-- (Optional slider content can go here if needed) -->
-        <div id="showValue">Luftvorrat <br />(0 bis 30)</div>
-        <div id="slider"></div>
-      </div> 
-      
-      <div id="bigwrap">
-        <div id="ballonwrap">
-          <div id="message"></div>
-          <div id="gonext"></div>
-          <img src="Balloon.png" id="ballon" alt="Balon">
-        </div>
-        
-        <button type="button" id="press"></button>
-        <button type="button" id="collect"></button>
-        <!-- Visualization element: current round points -->
+    <div id="bigwrap">
+      <!-- Balloon Frame -->
+      <div id="ballonwrap">
+        <!-- Feedback messages and next-round button -->
+        <div id="message"></div>
+        <div id="gonext"></div>
+        <!-- Balloon image -->
+        <img src="Balloon.png" id="ballon" alt="Balon">
+        <!-- Current round points (overlayed on the balloon) -->
         <div id="current_points">Poin Ronde Ini: 0</div>
-        <div id="total">
-          <div id="total_term"></div>
-          <div id="total_value"></div>
-        </div>
-        <button type="button" id="goOn">Lanjut</button>
       </div>
+      
+      <!-- Control Buttons -->
+      <button type="button" id="press"></button>
+      <button type="button" id="collect"></button>
+      
+      <!-- Total Points Display -->
+      <div id="total">
+        <div id="total_term"></div>
+        <div id="total_value"></div>
+      </div>
+      <button type="button" id="goOn">Lanjut</button>
     </div>
     
-    <!-- Hidden fields for data storage (if needed for Qualtrics/submit) -->
+    <!-- Hidden fields for data storage (for Qualtrics/submit) -->
     <div id="saveThis1"></div>
     <div id="saveThis2"></div>
     <div id="saveThis3"></div>
