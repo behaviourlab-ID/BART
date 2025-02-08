@@ -12,22 +12,22 @@ $(document).ready(function() {
   // -----------------------------------------------------
   // 1. CONFIGURATION (Shortened Version)
   // -----------------------------------------------------
-  var rounds_played = 20;       // Use 20 rounds instead of 30.
-  var maximal_pumps = 32;       // Lower maximum pumps (adjust as needed).
+  var rounds_played = 20;       // 20 rounds instead of 30
+  var maximal_pumps = 32;       // Maximum pumps lowered to 32
   
-  // Fixed explosion thresholds for 20 rounds (values chosen for demonstration):
+  // Fixed explosion thresholds for 20 rounds:
   var explode_array = [
     10, 15, 3, 12, 28, 7, 20, 31, 25, 18,
     6, 19, 5, 13, 30, 4, 11, 27, 17, 9
   ];
 
-  var start_size = 150;         // Initial size of the balloon (in pixels).
-  var increase = 2;             // Increase in size per pump.
+  var start_size = 150;         // Initial balloon size in pixels
+  var increase = 2;             // Increase in size per pump
   
   var round = 0;
   var size;
   var pumps;
-  var total = 0;                // Total points accumulated.
+  var total = 0;                // Total points accumulated
   var pumpmeup;
   var explosion;
   
@@ -99,13 +99,13 @@ $(document).ready(function() {
     store_data();
   }
 
-  // Example function to store data (e.g., in hidden fields or send via AJAX)
+  // Function to store data in hidden fields or send via AJAX
   function store_data() {
     $("#saveThis1").html('<input type="hidden" name="pumps" value="'+ number_pumps.join(",") +'" />');
     $("#saveThis2").html('<input type="hidden" name="exploded" value="'+ exploded.join(",") +'" />');
     $("#saveThis3").html('<input type="hidden" name="total" value="'+ total +'" />');
     
-    // (Optional) Add your AJAX code here to send data to your server/Google Apps Script.
+    // (Optional) AJAX code to send data to your server/Google Apps Script can be added here.
   }
 
   function explosion_message() {
@@ -146,13 +146,13 @@ $(document).ready(function() {
       pumps++;
       update_current_points();
 
-      // Check for explosion threshold (using fixed explode_array)
+      // Check if the pump count reaches the explosion threshold.
       if (pumps < explode_array[round - 1]) {
         size += increase;
         $("#ballon").width(size).height(size);
       } else {
         pumpmeup = pumps;
-        pumps = -1;
+        pumps = -1; // disable further pumping
         explosion = 1;
         balloon_explode();
         exploded.push(explosion);
@@ -168,7 +168,7 @@ $(document).ready(function() {
     if (pumps === 0) {
       alert(err_msg);
     } else if (pumps > 0) {
-      exploded.push(explosion); // 0 means no explosion.
+      exploded.push(explosion); // 0 means no explosion
       number_pumps.push(pumps);
       pumpmeup = pumps;
       pumps = -1;
@@ -189,7 +189,6 @@ $(document).ready(function() {
   });
 
   $("#goOn").click(function() {
-    // In Qualtrics, you might submit the form or send a message.
     alert("Terima kasih! Data Anda telah tersimpan.");
   });
 });
