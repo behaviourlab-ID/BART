@@ -118,35 +118,34 @@ $(document).ready(function() {
   // 5. Data Storage: Send Data to Google Sheets via AJAX
   // -----------------------------------------------------
   function store_data() {
-    // (Optional) Also store data in hidden fields:
-    $("#saveThis1").html('<input type="hidden" name="pumps" value="'+ number_pumps.join(",") +'" />');
-    $("#saveThis2").html('<input type="hidden" name="exploded" value="'+ exploded.join(",") +'" />');
-    $("#saveThis3").html('<input type="hidden" name="total" value="'+ total +'" />');
-    
-    // Replace with your actual Google Apps Script Web App URL:
-    var googleScriptURL = "https://script.google.com/macros/s/AKfycbyT6cQnTId0yVDSfjUMysHDXvUjIkYdEhWXEouT3fiLTRAkCTyA8Kj_uos1o1oeZ5_j/exec";
-    
-    // Prepare the payload, including the responseId from Qualtrics.
-    var payload = {
-      respId: responseId,                 // Qualtrics Response ID
-      pumps: number_pumps.join(","),
-      exploded: exploded.join(","),
-      total: total
-    };
-    
-    $.ajax({
-      url: googleScriptURL,
-      method: "POST",
-      data: payload,
-      success: function(response) {
-        console.log("Data posted successfully to Google Sheets:", response);
-      },
-      error: function(err) {
-        console.error("Error posting data to Google Sheets:", err);
-      }
-    });
-  }
-
+  // (Optional) Also store data in hidden fields:
+  $("#saveThis1").html('<input type="hidden" name="number_pumps" value="'+ number_pumps.join(",") +'" />');
+  $("#saveThis2").html('<input type="hidden" name="exploded" value="'+ exploded.join(",") +'" />');
+  $("#saveThis3").html('<input type="hidden" name="total" value="'+ total +'" />');
+  
+  // Replace with your actual Google Apps Script Web App URL:
+  var googleScriptURL = "https://script.google.com/macros/s/AKfycbyT6cQnTId0yVDSfjUMysHDXvUjIkYdEhWXEouT3fiLTRAkCTyA8Kj_uos1o1oeZ5_j/exec";
+  
+  // Prepare the payload with keys matching what the Apps Script expects:
+  var payload = {
+    response_id: responseId,  // changed from respId
+    number_pumps: number_pumps.join(","),
+    exploded: exploded.join(","),
+    total: total
+  };
+  
+  $.ajax({
+    url: googleScriptURL,
+    method: "POST",
+    data: payload,
+    success: function(response) {
+      console.log("Data posted successfully to Google Sheets:", response);
+    },
+    error: function(err) {
+      console.error("Error posting data to Google Sheets:", err);
+    }
+  });
+}
   // -----------------------------------------------------
   // 6. More Experiment Functions
   // -----------------------------------------------------
