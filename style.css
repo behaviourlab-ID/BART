@@ -58,10 +58,18 @@ body {
   transform: translate(-50%, -50%);
 }
 
-/* Visualization for current round points */
+/* Current round points overlay, positioned in the center of the balloon container */
 #current_points {
-  font-size: 120%;
-  margin: 10px 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 5px 10px;
+  border-radius: 5px;
 }
 
 /* Score display */
@@ -121,9 +129,15 @@ body {
   font-size: 150%;
 }
 
-#instructions p {
+#instructions p, #instructions ol {
   font-size: 110%;
   line-height: 1.4;
+  text-align: left;
+  margin-left: 20px;
+}
+
+#instructions ol {
+  list-style: decimal;
 }
 
 #instructions button {
@@ -144,5 +158,9 @@ body {
   #ballon {
     height: 100px;
     width: 100px;
+  }
+  #current_points {
+    font-size: 18px;
+    padding: 3px 8px;
   }
 }
