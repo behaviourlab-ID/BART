@@ -110,6 +110,7 @@ $(document).ready(function() {
     $("#goOn").show();
     $("#message").html(msg_end1 + total + msg_end2).show();
 
+    console.log("Final number_pumps:", number_pumps);
     store_data();
   }
 
