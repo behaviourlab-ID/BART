@@ -1,20 +1,20 @@
 body {
-  /* Disable text selection, so user can't accidentally highlight text */
   -webkit-user-select: none;
      -moz-user-select: -moz-none;
       -ms-user-select: none;
           user-select: none;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
 }
 
-/* Displays the current round at the top, centered */
+/* General page elements */
 #round {
   text-align: center;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 10px auto;
   font-size: 135%;
 }
 
-/* General message area for feedback ("Balon meledak", etc.) */
 #message {
   margin-top: 20px;
   padding: 10px;
@@ -22,86 +22,127 @@ body {
   font-size: 110%;
 }
 
-/* Slight style on the <h2> in the #round div */
 #round h2 {
-  margin-bottom: 0px;
+  margin-bottom: 0;
   padding: 1px;
 }
 
-/* Wrapper around the main balloon area and buttons */
+/* Main container for experiment */
 #bigwrap {
   text-align: center;
-  width: 550px;
+  width: 90%;
+  max-width: 550px;
   font-size: 135%;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 15px;
+  margin: 15px auto;
 }
 
-/* Container that displays the balloon (the border is optional) */
+/* Balloon container */
 #ballonwrap {
+  position: relative;
   height: 420px;
-  border: solid black 1px;
+  border: solid 1px black;
   border-radius: 5px;
   width: 100%;
   background: #fff;
 }
 
-/* The balloon image itself. Default: 150x150px */
+/* Balloon image */
 #ballon {
   height: 150px;
   width: 150px;
-  margin-right: auto;
-  margin-left: auto;
-  margin-bottom: -380px;
+  display: block;
+  margin: 0 auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
-/* Container for displaying total points, etc. 
-   display: table & table-cell let these line up horizontally */
+/* Visualization for current round points */
+#current_points {
+  font-size: 120%;
+  margin: 10px 0;
+}
+
+/* Score display */
 #total, #last_round {
   display: table;
   width: 100%;
-  margin-top: 4px;
-  margin-bottom: 4px;
-  padding-top: 4px;
-  padding-bottom: 4px;
+  margin: 4px 0;
+  padding: 4px 0;
   background: #fff;
   border-radius: 5px;
 }
 
-/* Basic styling for your buttons. 
-   #goOn is hidden initially until the game ends. */
-#press, #goOn, #collect {
-  font-size: 110%;
-  width: 100%;
-}
-
-#goOn {
-  display: none;
-}
-
-/* Align text in columns inside #total or #last_round */
 #total_term, #total_value, #last_term, #last_value {
   display: table-cell;
   width: 50%;
 }
+
 #total_term, #last_term {
   text-align: right;
 }
 
-/* Style for #gonext (next-round button) */
-#press, #collect, #goOn, #gonext {
+/* Buttons */
+#press, #goOn, #collect, #gonext {
+  font-size: 110%;
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
   cursor: pointer;
   background: #ddd;
+  border: none;
 }
+
 #press:hover, #collect:hover, #goOn:hover, #gonext:hover {
   background-color: #c2c2c2;
 }
+
 #gonext {
   font-size: 110%;
   border-radius: 10px;
   width: 300px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 10px auto;
   padding: 12px;
+}
+
+/* Instruction page styling */
+#instructions {
+  width: 90%;
+  max-width: 600px;
+  margin: 20px auto;
+  text-align: center;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+#instructions h1 {
+  font-size: 150%;
+}
+
+#instructions p {
+  font-size: 110%;
+  line-height: 1.4;
+}
+
+#instructions button {
+  padding: 10px 20px;
+  font-size: 120%;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+/* Responsive adjustments for mobile devices */
+@media only screen and (max-width: 600px) {
+  #bigwrap {
+    font-size: 120%;
+  }
+  #ballonwrap {
+    height: 300px;
+  }
+  #ballon {
+    height: 100px;
+    width: 100px;
+  }
 }
