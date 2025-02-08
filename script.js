@@ -162,10 +162,7 @@ $(document).ready(function() {
     $("#collect").hide();
     $("#press").hide();
     $("#message").html(msg_collect1 + pumpmeup + msg_collect2).show();
-    // Reset the current round's points display to 0 after collecting
-    pumps = -1;
-    update_current_points();
-  }
+    }
 
   function balloon_explode() {
     $("#ballon").hide("explode", { pieces: 48 }, 1000);
