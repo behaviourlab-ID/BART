@@ -78,6 +78,7 @@ $(document).ready(function() {
   // 3. Helper Function: Update Current Round's Points Visualization
   // -----------------------------------------------------
   function update_current_points() {
+    // Ensure that if pumps is <= 0, we show 0.
     $("#current_points").text("Poin Ronde Ini: " + (pumps > 0 ? pumps : 0));
   }
 
@@ -152,12 +153,18 @@ $(document).ready(function() {
     $("#collect").hide();
     $("#press").hide();
     $("#message").html(msg_explosion1 + pumpmeup + msg_explosion2).show();
+    // Reset the current round's points display to 0
+    pumps = -1; // Already set when exploding
+    update_current_points();
   }
 
   function collected_message() {
     $("#collect").hide();
     $("#press").hide();
     $("#message").html(msg_collect1 + pumpmeup + msg_collect2).show();
+    // Reset the current round's points display to 0 after collecting
+    pumps = -1;
+    update_current_points();
   }
 
   function balloon_explode() {
