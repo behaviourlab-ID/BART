@@ -1,5 +1,18 @@
 $(document).ready(function() {
-  // Initially hide the experiment container.
+
+  // -----------------------------------------------------
+  // A. GET Qualtrics Response ID from URL
+  // -----------------------------------------------------
+  function getQueryParam(param) {
+    var urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param) || "";
+  }
+  // Capture the response ID (e.g., ?respId=SV_abcdef123)
+  var responseId = getQueryParam("respId");
+
+  // -----------------------------------------------------
+  // B. Initial Setup: Hide Experiment Until Instructions are Read
+  // -----------------------------------------------------
   $("#experiment").hide();
 
   // When the Start button is clicked, hide instructions and show the experiment.
@@ -12,7 +25,7 @@ $(document).ready(function() {
   // -----------------------------------------------------
   // 1. CONFIGURATION (Shortened Version)
   // -----------------------------------------------------
-  var rounds_played = 20;       // 20 rounds instead of 30
+  var rounds_played = 20;       // 20 rounds
   var maximal_pumps = 32;       // Maximum pumps lowered to 32
   
   // Fixed explosion thresholds for 20 rounds:
@@ -21,8 +34,8 @@ $(document).ready(function() {
     6, 19, 5, 13, 30, 4, 11, 27, 17, 9
   ];
 
-  var start_size = 150;         // Initial balloon size in pixels
-  var increase = 2;             // Increase in size per pump
+  var start_size = 150;         // Initial balloon size (pixels)
+  var increase = 2;             // Size increment per pump
   
   var round = 0;
   var size;
@@ -99,15 +112,42 @@ $(document).ready(function() {
     store_data();
   }
 
-  // Function to store data in hidden fields or send via AJAX
+  // -----------------------------------------------------
+  // 5. Data Storage: Send Data to Google Sheets via AJAX
+  // -----------------------------------------------------
   function store_data() {
+    // (Optional) Also store data in hidden fields:
     $("#saveThis1").html('<input type="hidden" name="pumps" value="'+ number_pumps.join(",") +'" />');
     $("#saveThis2").html('<input type="hidden" name="exploded" value="'+ exploded.join(",") +'" />');
     $("#saveThis3").html('<input type="hidden" name="total" value="'+ total +'" />');
     
-    // (Optional) AJAX code to send data to your server/Google Apps Script can be added here.
+    // Replace with your actual Google Apps Script Web App URL:
+    var googleScriptURL = "https://script.google.com/macros/s/AKfycbyT6cQnTId0yVDSfjUMysHDXvUjIkYdEhWXEouT3fiLTRAkCTyA8Kj_uos1o1oeZ5_j/exec";
+    
+    // Prepare the payload, including the responseId from Qualtrics.
+    var payload = {
+      respId: responseId,                 // Qualtrics Response ID
+      pumps: number_pumps.join(","),
+      exploded: exploded.join(","),
+      total: total
+    };
+    
+    $.ajax({
+      url: googleScriptURL,
+      method: "POST",
+      data: payload,
+      success: function(response) {
+        console.log("Data posted successfully to Google Sheets:", response);
+      },
+      error: function(err) {
+        console.error("Error posting data to Google Sheets:", err);
+      }
+    });
   }
 
+  // -----------------------------------------------------
+  // 6. More Experiment Functions
+  // -----------------------------------------------------
   function explosion_message() {
     $("#collect").hide();
     $("#press").hide();
@@ -138,7 +178,7 @@ $(document).ready(function() {
   }
 
   // -----------------------------------------------------
-  // 5. Button Handlers
+  // 7. Button Handlers
   // -----------------------------------------------------
   $("#press").click(function() {
     if (pumps >= 0 && pumps < maximal_pumps) {
@@ -146,7 +186,7 @@ $(document).ready(function() {
       pumps++;
       update_current_points();
 
-      // Check if the pump count reaches the explosion threshold.
+      // Check if pump count reaches explosion threshold:
       if (pumps < explode_array[round - 1]) {
         size += increase;
         $("#ballon").width(size).height(size);
