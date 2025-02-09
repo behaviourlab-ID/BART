@@ -104,18 +104,25 @@ $(document).ready(function() {
   // The end_game() function now immediately saves data and then instructs the user
   // to click the blue arrow (Qualtrics Next button) in the bottom right.
   function end_game() {
-    $("#collect").remove();
-    $("#press").remove();
-    $("#gonext").remove();
-    $("#round").remove();
-    $("#ballonwrap").remove();
-
-    // Save data immediately.
-    store_data();
-
-    // Show the final message with instructions.
-    $("#message").html(msg_end1 + total + msg_end2).show();
-  }
+  // Clone the message element
+  var finalMessage = $("#message").clone();
+  
+  // Remove the elements that are not needed.
+  $("#collect").remove();
+  $("#press").remove();
+  $("#gonext").remove();
+  $("#round").remove();
+  $("#ballonwrap").remove();
+  
+  // Append the cloned message element to the experiment container
+  $("#experiment").append(finalMessage);
+  
+  // Update and show the final message.
+  finalMessage.html(msg_end1 + total + msg_end2).show();
+  
+  console.log("Final number_pumps:", number_pumps);
+  store_data();
+}
 
   // -----------------------------------------------------
   // 5. Data Storage: Send Data to Google Sheets via AJAX
