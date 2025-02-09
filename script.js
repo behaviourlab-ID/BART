@@ -64,8 +64,9 @@ $(document).ready(function() {
   var msg_explosion2 = ".</p><p>Anda tidak mendapatkan poin pada ronde ini.</p>";
   var msg_collect1   = "<p>Balon tidak meledak!</p><p>Anda mendapatkan ";
   var msg_collect2   = " poin pada ronde ini. Poin tersebut telah disimpan dengan aman.</p>";
+  // Updated end message with new instructions.
   var msg_end1       = "<p>Bagian ini sudah selesai. Anda mendapatkan total ";
-  var msg_end2       = " poin. Klik <i>Lanjut</i> untuk melanjutkan.</p>";
+  var msg_end2       = " poin. Data telah tersimpan. Silakan klik panah biru di kanan bawah untuk melanjutkan.</p>";
 
   // Set initial labels on buttons and score display.
   $("#press").text(label_press);
@@ -100,6 +101,8 @@ $(document).ready(function() {
     $("#round").html("<h2>" + label_header + round + "</h2>");
   }
 
+  // The end_game() function now immediately saves data and then instructs the user
+  // to click the blue arrow (Qualtrics Next button) in the bottom right.
   function end_game() {
     $("#collect").remove();
     $("#press").remove();
@@ -107,45 +110,46 @@ $(document).ready(function() {
     $("#round").remove();
     $("#ballonwrap").remove();
 
-    $("#goOn").show();
-    $("#message").html(msg_end1 + total + msg_end2).show();
-
-    console.log("Final number_pumps:", number_pumps);
+    // Save data immediately.
     store_data();
+
+    // Show the final message with instructions.
+    $("#message").html(msg_end1 + total + msg_end2).show();
   }
 
   // -----------------------------------------------------
   // 5. Data Storage: Send Data to Google Sheets via AJAX
   // -----------------------------------------------------
   function store_data() {
-  // (Optional) Also store data in hidden fields:
-  $("#saveThis1").html('<input type="hidden" name="number_pumps" value="'+ number_pumps.join(",") +'" />');
-  $("#saveThis2").html('<input type="hidden" name="exploded" value="'+ exploded.join(",") +'" />');
-  $("#saveThis3").html('<input type="hidden" name="total" value="'+ total +'" />');
-  
-  // Replace with your actual Google Apps Script Web App URL:
-  var googleScriptURL = "https://script.google.com/macros/s/AKfycbyT6cQnTId0yVDSfjUMysHDXvUjIkYdEhWXEouT3fiLTRAkCTyA8Kj_uos1o1oeZ5_j/exec";
-  
-  // Prepare the payload with keys matching what the Apps Script expects:
-  var payload = {
-    response_id: responseId,  // changed from respId
-    number_pumps: number_pumps.join(","),
-    exploded: exploded.join(","),
-    total: total
-  };
-  
-  $.ajax({
-    url: googleScriptURL,
-    method: "POST",
-    data: payload,
-    success: function(response) {
-      console.log("Data posted successfully to Google Sheets:", response);
-    },
-    error: function(err) {
-      console.error("Error posting data to Google Sheets:", err);
-    }
-  });
-}
+    // (Optional) Also store data in hidden fields:
+    $("#saveThis1").html('<input type="hidden" name="number_pumps" value="'+ number_pumps.join(",") +'" />');
+    $("#saveThis2").html('<input type="hidden" name="exploded" value="'+ exploded.join(",") +'" />');
+    $("#saveThis3").html('<input type="hidden" name="total" value="'+ total +'" />');
+    
+    // Replace with your actual Google Apps Script Web App URL:
+    var googleScriptURL = "https://script.google.com/macros/s/AKfycbyT6cQnTId0yVDSfjUMysHDXvUjIkYdEhWXEouT3fiLTRAkCTyA8Kj_uos1o1oeZ5_j/exec";
+    
+    // Prepare the payload with keys matching what the Apps Script expects:
+    var payload = {
+      response_id: responseId,
+      number_pumps: number_pumps.join(","),
+      exploded: exploded.join(","),
+      total: total
+    };
+    
+    $.ajax({
+      url: googleScriptURL,
+      method: "POST",
+      data: payload,
+      success: function(response) {
+        console.log("Data posted successfully to Google Sheets:", response);
+      },
+      error: function(err) {
+        console.error("Error posting data to Google Sheets:", err);
+      }
+    });
+  }
+
   // -----------------------------------------------------
   // 6. More Experiment Functions
   // -----------------------------------------------------
@@ -162,7 +166,8 @@ $(document).ready(function() {
     $("#collect").hide();
     $("#press").hide();
     $("#message").html(msg_collect1 + pumpmeup + msg_collect2).show();
-    }
+    // Do not reset the current round's points display because the points are kept.
+  }
 
   function balloon_explode() {
     $("#ballon").hide("explode", { pieces: 48 }, 1000);
@@ -232,7 +237,9 @@ $(document).ready(function() {
     }
   });
 
+  // (Optional) Remove the goOn button handler if not used.
   $("#goOn").click(function() {
     alert("Terima kasih! Data Anda telah tersimpan.");
   });
 });
+  
