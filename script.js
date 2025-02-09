@@ -66,7 +66,7 @@ $(document).ready(function() {
   var msg_collect2   = " poin pada ronde ini. Poin tersebut telah disimpan dengan aman.</p>";
   // Updated end message with new instructions.
   var msg_end1       = "<p>Bagian ini sudah selesai. Anda mendapatkan total ";
-  var msg_end2       = " poin. Data telah tersimpan. Silakan klik panah biru di kanan bawah untuk melanjutkan.</p>";
+  var msg_end2       = " poin. Data telah tersimpan. Silakan klik panah biru di pojok kanan bawah untuk melanjutkan.</p>";
 
   // Set initial labels on buttons and score display.
   $("#press").text(label_press);
